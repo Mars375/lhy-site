@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LHY — Connexion TikTok</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0d12;
+      color: #e8eaed;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #11151c;
+      border: 1px solid #232a36;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      background: #33cde3;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #0a0d12;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #e8eaed;
+    }
+    p {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #9aa0a6;
+      margin-bottom: 24px;
+    }
+    .code-box {
+      background: #0a0d12;
+      border: 1px solid #232a36;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px 0;
+      word-break: break-all;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      color: #33cde3;
+      text-align: left;
+    }
+    .success {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(51, 205, 227, 0.1);
+      border: 1px solid rgba(51, 205, 227, 0.3);
+      color: #33cde3;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .error {
+      background: rgba(255, 77, 79, 0.1);
+      border: 1px solid rgba(255, 77, 79, 0.3);
+      color: #ff4d4f;
+      padding: 16px;
+      border-radius: 12px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .info {
+      background: rgba(51, 205, 227, 0.05);
+      border: 1px solid rgba(51, 205, 227, 0.15);
+      padding: 16px;
+      border-radius: 12px;
+      margin: 16px 0;
+      font-size: 13px;
+      color: #9aa0a6;
+      text-align: left;
+    }
+    .btn {
+      display: inline-block;
+      background: #33cde3;
+      color: #0a0d12;
+      padding: 14px 28px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">LHY</div>
+    <h1>Connexion TikTok</h1>
+    <p>Autorisez LHY Studio à accéder à votre compte TikTok pour publier vos vidéos.</p>
+
+    <div id="success-block" class="hidden">
+      <div class="success">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        Autorisation reçue
+      </div>
+      <p>Voici votre code d'autorisation. Il sera échangé contre un jeton d'accès côté serveur.</p>
+      <div class="code-box" id="auth-code"></div>
+      <div class="info">
+        <strong>Prochaine étape :</strong> le serveur LHY échange ce code contre un jeton d'accès sécurisé, puis utilise Content Posting API pour publier vos vidéos.
+      </div>
+    </div>
+
+    <div id="error-block" class="hidden">
+      <div class="error" id="error-message"></div>
+    </div>
+
+    <div id="loading-block">
+      <p>En attente de l'autorisation TikTok…</p>
+    </div>
+
+    <a href="/" class="btn hidden" id="back-btn">Retour au site</a>
+  </div>
+
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      const error = params.get('error');
+      const errorDesc = params.get('error_description');
+      const state = params.get('state');
+
+      const successBlock = document.getElementById('success-block');
+      const errorBlock = document.getElementById('error-block');
+      const loadingBlock = document.getElementById('loading-block');
+      const authCode = document.getElementById('auth-code');
+      const errorMessage = document.getElementById('error-message');
+      const backBtn = document.getElementById('back-btn');
+
+      if (error) {
+        loadingBlock.classList.add('hidden');
+        errorBlock.classList.remove('hidden');
+        errorMessage.textContent = 'Erreur : ' + (errorDesc || error);
+        backBtn.classList.remove('hidden');
+      } else if (code) {
+        loadingBlock.classList.add('hidden');
+        successBlock.classList.remove('hidden');
+        authCode.textContent = code;
+        backBtn.classList.remove('hidden');
+      } else {
+        loadingBlock.classList.remove('hidden');
+      }
+    })();
+  </script>
+</body>
+</html>
